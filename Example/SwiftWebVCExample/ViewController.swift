@@ -53,7 +53,6 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: SwiftWebVCDelegate {
-    
     func didStartLoading() {
         print("Started loading.")
     }

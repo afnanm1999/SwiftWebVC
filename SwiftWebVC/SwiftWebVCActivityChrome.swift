@@ -28,11 +28,11 @@ class SwiftWebVCActivityChrome : SwiftWebVCActivity {
         let scheme: String! = inputURL.scheme
         
         // Replace the URL Scheme with the Chrome equivalent.
-        var chromeScheme: String? = nil;
+        var chromeScheme: String? = nil
+        
         if scheme == "http" {
             chromeScheme = "googlechrome"
-        }
-        else if scheme == "https" {
+        } else if scheme == "https" {
             chromeScheme = "googlechromes"
         }
         

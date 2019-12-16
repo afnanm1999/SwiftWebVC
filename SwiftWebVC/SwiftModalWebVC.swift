@@ -13,6 +13,7 @@ public class SwiftModalWebVC: UINavigationController {
     public enum SwiftModalWebVCTheme {
         case lightBlue, lightBlack, dark
     }
+    
     public enum SwiftModalWebVCDismissButtonStyle {
         case arrow, cross
     }
@@ -24,6 +25,7 @@ public class SwiftModalWebVC: UINavigationController {
         if !urlString.hasPrefix("https://") && !urlString.hasPrefix("http://") {
             urlString = "https://"+urlString
         }
+        
         self.init(pageURL: URL(string: urlString)!, sharingEnabled: sharingEnabled)
     }
     
@@ -64,16 +66,16 @@ public class SwiftModalWebVC: UINavigationController {
         case .dark:
             doneButton.tintColor = UIColor.white
             webViewController.buttonColor = UIColor.white
-            webViewController.titleColor = UIColor.groupTableViewBackground
+            webViewController.titleColor = UIColor.white
             UINavigationBar.appearance().barStyle = UIBarStyle.black
         }
         
-        if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             webViewController.navigationItem.leftBarButtonItem = doneButton
-        }
-        else {
+        } else {
             webViewController.navigationItem.rightBarButtonItem = doneButton
         }
+        
         super.init(rootViewController: webViewController)
     }
     

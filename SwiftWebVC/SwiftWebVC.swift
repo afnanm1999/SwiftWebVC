@@ -74,7 +74,7 @@ public class SwiftWebVC: UIViewController {
     }()
     
     var request: URLRequest!
-    
+
     var navBarTitle: UILabel!
     
     var sharingEnabled = true
@@ -132,12 +132,10 @@ public class SwiftWebVC: UIViewController {
         navBarTitle = UILabel()
         navBarTitle.backgroundColor = UIColor.clear
         if presentingViewController == nil {
-            
             if let titleAttributes = navigationController!.navigationBar.titleTextAttributes as [NSAttributedString.Key : Any]? {
                 navBarTitle.textColor = titleAttributes[NSAttributedString.Key.foregroundColor] as? UIColor
             }
-        }
-        else {
+        } else {
             navBarTitle.textColor = self.titleColor
         }
         navBarTitle.shadowOffset = CGSize(width: 0, height: 1);
@@ -147,11 +145,12 @@ public class SwiftWebVC: UIViewController {
         
         super.viewWillAppear(true)
         
-        if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.phone) {
+        switch UIDevice.current.userInterfaceIdiom {
+        case .phone:
             self.navigationController?.setToolbarHidden(self.hideToolBar, animated: false)
-        }
-        else if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
-            self.navigationController?.setToolbarHidden(true, animated: true)
+        case .pad:
+             self.navigationController?.setToolbarHidden(true, animated: true)
+        default: break
         }
     }
     
