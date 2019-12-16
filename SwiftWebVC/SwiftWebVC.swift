@@ -68,7 +68,6 @@ public class SwiftWebVC: UIViewController {
     
     lazy var webView: WKWebView = {
         var tempWebView = WKWebView(frame: UIScreen.main.bounds)
-        tempWebView.uiDelegate = self
         tempWebView.navigationDelegate = self
         return tempWebView;
     }()
@@ -86,7 +85,6 @@ public class SwiftWebVC: UIViewController {
     deinit {
         webView.stopLoading()
         UIApplication.shared.isNetworkActivityIndicatorVisible = false
-        webView.uiDelegate = nil;
         webView.navigationDelegate = nil;
     }
     
@@ -115,7 +113,6 @@ public class SwiftWebVC: UIViewController {
     
     ////////////////////////////////////////////////
     // View Lifecycle
-    
     override public func loadView() {
         view = webView
         loadRequest(request)
@@ -157,7 +154,7 @@ public class SwiftWebVC: UIViewController {
     override public func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         
-        if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.phone) {
+        if UIDevice.current.userInterfaceIdiom == .phone {
             self.navigationController?.setToolbarHidden(true, animated: true)
         }
     }
@@ -174,6 +171,7 @@ public class SwiftWebVC: UIViewController {
         guard hideToolBar == false else {
             return
         }
+        
         backBarButtonItem.isEnabled = webView.canGoBack
         forwardBarButtonItem.isEnabled = webView.canGoForward
         
@@ -182,8 +180,7 @@ public class SwiftWebVC: UIViewController {
         let fixedSpace: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.fixedSpace, target: nil, action: nil)
         let flexibleSpace: UIBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         
-        if (UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad) {
-            
+        if UIDevice.current.userInterfaceIdiom == .pad {
             let toolbarWidth: CGFloat = 250.0
             fixedSpace.width = 35.0
             
@@ -192,37 +189,36 @@ public class SwiftWebVC: UIViewController {
             let toolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0.0, y: 0.0, width: toolbarWidth, height: 44.0))
             if !closing {
                 toolbar.items = items as? [UIBarButtonItem]
+                
                 if presentingViewController == nil {
                     toolbar.barTintColor = navigationController!.navigationBar.barTintColor
-                }
-                else {
+                } else {
                     toolbar.barStyle = navigationController!.navigationBar.barStyle
                 }
+                
                 toolbar.tintColor = navigationController!.navigationBar.tintColor
             }
+            
             navigationItem.rightBarButtonItems = items.reverseObjectEnumerator().allObjects as? [UIBarButtonItem]
             
-        }
-        else {
+        } else {
             let items: NSArray = sharingEnabled ? [fixedSpace, backBarButtonItem, flexibleSpace, forwardBarButtonItem, flexibleSpace, refreshStopBarButtonItem, flexibleSpace, actionBarButtonItem, fixedSpace] : [fixedSpace, backBarButtonItem, flexibleSpace, forwardBarButtonItem, flexibleSpace, refreshStopBarButtonItem, fixedSpace]
             
             if let navigationController = navigationController, !closing {
                 if presentingViewController == nil {
                     navigationController.toolbar.barTintColor = navigationController.navigationBar.barTintColor
-                }
-                else {
+                } else {
                     navigationController.toolbar.barStyle = navigationController.navigationBar.barStyle
                 }
+                
                 navigationController.toolbar.tintColor = navigationController.navigationBar.tintColor
                 toolbarItems = items as? [UIBarButtonItem]
             }
         }
     }
     
-    
     ////////////////////////////////////////////////
     // Target Actions
-    
     @objc func goBackTapped(_ sender: UIBarButtonItem) {
         webView.goBack()
     }
@@ -241,15 +237,13 @@ public class SwiftWebVC: UIViewController {
     }
     
     @objc func actionButtonTapped(_ sender: AnyObject) {
-        
         if let url: URL = ((webView.url != nil) ? webView.url : request.url) {
             let activities: NSArray = [SwiftWebVCActivitySafari(), SwiftWebVCActivityChrome()]
             
             if url.absoluteString.hasPrefix("file:///") {
                 let dc: UIDocumentInteractionController = UIDocumentInteractionController(url: url)
                 dc.presentOptionsMenu(from: view.bounds, in: view, animated: true)
-            }
-            else {
+            } else {
                 let activityController: UIActivityViewController = UIActivityViewController(activityItems: [url], applicationActivities: activities as? [UIActivity])
                 
                 if floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1 && UIDevice.current.userInterfaceIdiom == UIUserInterfaceIdiom.pad {
@@ -272,7 +266,6 @@ public class SwiftWebVC: UIViewController {
     }
 
     // MARK: - Class Methods
-
     /// Helper function to get image within SwiftWebVCResources bundle
     ///
     /// - parameter named: The name of the image in the SwiftWebVCResources bundle
@@ -280,20 +273,18 @@ public class SwiftWebVC: UIViewController {
         let image = UIImage(named: named)
         if image == nil {
             return UIImage(named: named, in: Bundle(for: SwiftWebVC.classForCoder()), compatibleWith: nil)
-        } // Replace MyBasePodClass with yours
+        }
+        
         return image
     }
     
 }
 
-extension SwiftWebVC: WKUIDelegate {
-    
-    // Add any desired WKUIDelegate methods here: https://developer.apple.com/reference/webkit/wkuidelegate
-    
-}
+//extension SwiftWebVC: WKUIDelegate {
+//    // Add any desired WKUIDelegate methods here: https://developer.apple.com/reference/webkit/wkuidelegate
+//}
 
 extension SwiftWebVC: WKNavigationDelegate {
-    
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         self.delegate?.didStartLoading()
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
@@ -308,11 +299,11 @@ extension SwiftWebVC: WKNavigationDelegate {
             self.navBarTitle.text = title
             self.navBarTitle.sizeToFit()
             self.updateToolbarItems()
-        }else{
-            webView.evaluateJavaScript("document.title", completionHandler: {(response, error) in
-                self.navBarTitle.text = response as! String?
-                self.navBarTitle.sizeToFit()
-                self.updateToolbarItems()
+        } else {
+            webView.evaluateJavaScript("document.title", completionHandler: { [weak self] (response, error) in
+                self?.navBarTitle.text = response as! String?
+                self?.navBarTitle.sizeToFit()
+                self?.updateToolbarItems()
             })
         }
     }
@@ -326,10 +317,9 @@ extension SwiftWebVC: WKNavigationDelegate {
     public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         
         let url = navigationAction.request.url
-        
         let hostAddress = navigationAction.request.url?.host
         
-        if (navigationAction.targetFrame == nil) {
+        if navigationAction.targetFrame == nil {
             if UIApplication.shared.canOpenURL(url!) {
                 UIApplication.shared.openURL(url!)
             }
@@ -350,28 +340,22 @@ extension SwiftWebVC: WKNavigationDelegate {
         case "tel":
             openCustomApp(urlScheme: "telprompt://", additional_info: url_elements[1])
             decisionHandler(.cancel)
-            
         case "sms":
             openCustomApp(urlScheme: "sms://", additional_info: url_elements[1])
             decisionHandler(.cancel)
-            
         case "mailto":
             openCustomApp(urlScheme: "mailto://", additional_info: url_elements[1])
             decisionHandler(.cancel)
-            
-        default:
-            //print("Default")
-            break
+        default: break
         }
         
         decisionHandler(.allow)
-        
     }
     
     func openCustomApp(urlScheme: String, additional_info:String){
-        
         if let requestUrl: URL = URL(string:"\(urlScheme)"+"\(additional_info)") {
-            let application:UIApplication = UIApplication.shared
+            let application: UIApplication = UIApplication.shared
+            
             if application.canOpenURL(requestUrl) {
                 application.openURL(requestUrl)
             }

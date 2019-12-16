@@ -8,15 +8,15 @@
 
 import UIKit
 
+public enum SwiftModalWebVCTheme {
+    case lightBlue, lightBlack, dark
+}
+
+public enum SwiftModalWebVCDismissButtonStyle {
+    case arrow, cross
+}
+
 public class SwiftModalWebVC: UINavigationController {
-    
-    public enum SwiftModalWebVCTheme {
-        case lightBlue, lightBlack, dark
-    }
-    
-    public enum SwiftModalWebVCDismissButtonStyle {
-        case arrow, cross
-    }
     
     weak var webViewDelegate: UIWebViewDelegate? = nil
     
