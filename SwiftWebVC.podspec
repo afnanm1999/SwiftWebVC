@@ -40,9 +40,9 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'SwiftWebVC/**/*.swift'
+  s.source_files = 'Sources/SwiftWebVC/**/*.swift'
 
-  s.resources = 'SwiftWebVC/Resources/*'
+  s.resources = 'Sources/SwiftWebVC/Resources/*'
   s.resource_bundles = {
     'SwiftWebVCResources' => ['SwiftWebVC/Resources/*']
   }
