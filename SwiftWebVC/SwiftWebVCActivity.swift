@@ -8,19 +8,17 @@
 
 import UIKit
 
-
 class SwiftWebVCActivity: UIActivity {
-    
     var URLToOpen: URL?
     var schemePrefix: String?
     
-    override var activityType : UIActivity.ActivityType? {
+    override var activityType: UIActivity.ActivityType? {
         let typeArray = "\(type(of: self))".components(separatedBy: ".")
         let _type: String = typeArray[typeArray.count-1]
         return UIActivity.ActivityType(rawValue: _type)
     }
     
-    override var activityImage : UIImage {
+    override var activityImage: UIImage {
         if let type = activityType?.rawValue {
             return SwiftWebVC.bundledImage(named: "\(type)")!
         } else {
@@ -36,5 +34,4 @@ class SwiftWebVCActivity: UIActivity {
             }
         }
     }
-    
 }

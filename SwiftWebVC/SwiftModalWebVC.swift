@@ -17,38 +17,37 @@ public enum SwiftModalWebVCDismissButtonStyle {
 }
 
 public class SwiftModalWebVC: UINavigationController {
-    
-    weak var webViewDelegate: UIWebViewDelegate? = nil
-    
+    weak var webViewDelegate: UIWebViewDelegate?
+
     public convenience init(urlString: String, sharingEnabled: Bool = true) {
         var urlString = urlString
         if !urlString.hasPrefix("https://") && !urlString.hasPrefix("http://") {
             urlString = "https://"+urlString
         }
-        
+
         self.init(pageURL: URL(string: urlString)!, sharingEnabled: sharingEnabled)
     }
-    
+
     public convenience init(urlString: String, theme: SwiftModalWebVCTheme, dismissButtonStyle: SwiftModalWebVCDismissButtonStyle, sharingEnabled: Bool = true) {
         self.init(pageURL: URL(string: urlString)!, theme: theme, dismissButtonStyle: dismissButtonStyle, sharingEnabled: sharingEnabled)
     }
-    
+
     public convenience init(pageURL: URL, sharingEnabled: Bool = true) {
         self.init(request: URLRequest(url: pageURL), sharingEnabled: sharingEnabled)
     }
-    
+
     public convenience init(pageURL: URL, theme: SwiftModalWebVCTheme, dismissButtonStyle: SwiftModalWebVCDismissButtonStyle, sharingEnabled: Bool = true) {
         self.init(request: URLRequest(url: pageURL), theme: theme, dismissButtonStyle: dismissButtonStyle, sharingEnabled: sharingEnabled)
     }
-    
+
     public init(request: URLRequest, theme: SwiftModalWebVCTheme = .lightBlue, dismissButtonStyle: SwiftModalWebVCDismissButtonStyle = .arrow, sharingEnabled: Bool = true) {
         let webViewController = SwiftWebVC(aRequest: request)
         webViewController.sharingEnabled = sharingEnabled
         webViewController.storedStatusColor = UINavigationBar.appearance().barStyle
-        
+
         let dismissButtonImageName = (dismissButtonStyle == .arrow) ? "SwiftWebVCDismiss" : "SwiftWebVCDismissAlt"
         let doneButton = UIBarButtonItem(image: SwiftWebVC.bundledImage(named: dismissButtonImageName),
-                                         style: UIBarButtonItem.Style.plain,
+                                         style: .plain,
                                          target: webViewController,
                                          action: #selector(SwiftWebVC.doneButtonTapped))
         
@@ -56,18 +55,18 @@ public class SwiftModalWebVC: UINavigationController {
         case .lightBlue:
             doneButton.tintColor = nil
             webViewController.buttonColor = nil
-            webViewController.titleColor = UIColor.black
-            UINavigationBar.appearance().barStyle = UIBarStyle.default
+            webViewController.titleColor = .black
+            UINavigationBar.appearance().barStyle = .default
         case .lightBlack:
-            doneButton.tintColor = UIColor.darkGray
-            webViewController.buttonColor = UIColor.darkGray
-            webViewController.titleColor = UIColor.black
-            UINavigationBar.appearance().barStyle = UIBarStyle.default
+            doneButton.tintColor = .darkGray
+            webViewController.buttonColor = .darkGray
+            webViewController.titleColor = .black
+            UINavigationBar.appearance().barStyle = .default
         case .dark:
-            doneButton.tintColor = UIColor.white
-            webViewController.buttonColor = UIColor.white
-            webViewController.titleColor = UIColor.white
-            UINavigationBar.appearance().barStyle = UIBarStyle.black
+            doneButton.tintColor = .white
+            webViewController.buttonColor = .white
+            webViewController.titleColor = .white
+            UINavigationBar.appearance().barStyle = .black
         }
         
         if UIDevice.current.userInterfaceIdiom == .pad {
@@ -78,16 +77,8 @@ public class SwiftModalWebVC: UINavigationController {
         
         super.init(rootViewController: webViewController)
     }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    }
-    
-    required public init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override public func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(false)
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
